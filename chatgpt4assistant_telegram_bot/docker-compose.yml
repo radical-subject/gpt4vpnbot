@@ -11,7 +11,7 @@ services:
       - openvpn-client
     volumes:
       - ${MONGODB_PATH:-./mongodb}:/data/db
-    network_mode: container:openvpn_radical
+    #network_mode: container:openvpn_radical
 
   chatgpt_telegram_bot:
     container_name: chatgpt_telegram_bot
@@ -39,7 +39,7 @@ services:
       - ME_CONFIG_BASICAUTH_PASSWORD=${MONGO_EXPRESS_PASSWORD:-password}
     depends_on:
       - mongo, openvpn_radical
-    network_mode: container:openvpn_radical
+    #network_mode: container:openvpn_radical
 
   openvpn-client:
     image: ghcr.io/wfg/openvpn-client:latest
@@ -49,11 +49,11 @@ services:
     devices:
       - /dev/net/tun:/dev/net/tun
     environment:
-      - ALLOWED_SUBNETS=192.168.10.0/24 #,127.0.0.1/24
+      - ALLOWED_SUBNETS=192.168.10.0/24, 127.0.0.1/24
     ports:
       - 9001:9001
-      - 8089:8089
-      - 27019:27019
+     # - 8089:8089
+     # - 27019:27019
     volumes:
       - /home/fedorov_ov/gpt4bot/conf:/data/vpn
     restart: unless-stopped
