@@ -1,0 +1,24 @@
+services:
+  openvpn-client:
+    image: ghcr.io/wfg/openvpn-client:latest
+    container_name: openvpn_radical
+    cap_add:
+      - NET_ADMIN
+    devices:
+      - /dev/net/tun:/dev/net/tun
+    environment:
+      - ALLOWED_SUBNETS=192.168.10.0/24,127.0.0.1/24
+    ports:
+      - 9001:9001
+     # - 8081:8081
+
+#    networks:
+ #     - network1
+     # - 27017:27017
+    volumes:
+      - /home/fedorov_ov/gpt4bot/conf:/data/vpn
+    restart: unless-stopped
+
+networks:
+  network1:
+    name: my-pre-existing-network
