@@ -20,8 +20,8 @@ services:
       context: "."
       dockerfile: Dockerfile
     depends_on:
-      - mongo, openvpn-client
-    network_mode: "container:openvpn_radical"
+      - mongo, openvpn_radical
+    network_mode: container:openvpn_radical
 
   mongo_express:
     container_name: mongo-express
@@ -37,7 +37,7 @@ services:
       - ME_CONFIG_BASICAUTH_USERNAME=${MONGO_EXPRESS_USERNAME:-username}
       - ME_CONFIG_BASICAUTH_PASSWORD=${MONGO_EXPRESS_PASSWORD:-password}
     depends_on:
-      - mongo, openvpn-client
+      - mongo, openvpn_radical
     # network_mode: container:openvpn_radical
 
   openvpn-client:
