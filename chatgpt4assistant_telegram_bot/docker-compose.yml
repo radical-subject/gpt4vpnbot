@@ -1,4 +1,3 @@
-
 version: "3"
 
 services:
@@ -6,29 +5,23 @@ services:
     container_name: mongo
     image: mongo:latest
     restart: always
-
-    #networks:
-     # - network1
     ports:
       - 127.0.0.1:${MONGODB_PORT:-27017}:${MONGODB_PORT:-27017}
+    depends_on:
+      - openvpn-client
     volumes:
       - ${MONGODB_PATH:-./mongodb}:/data/db
-    # TODO: add auth
-    # network_mode: container:openvpn_radical
 
   chatgpt_telegram_bot:
     container_name: chatgpt_telegram_bot
     command: python3 bot/bot.py
-    restart: always 
-#    networks:
- #     - network1
-
+    restart: always
     build:
       context: "."
       dockerfile: Dockerfile
     depends_on:
-      - mongo
-    #network_mode: container:openvpn_radical
+      - mongo, openvpn-client
+    network_mode: "service:openvpn_radical"
 
   mongo_express:
     container_name: mongo-express
@@ -36,8 +29,6 @@ services:
     restart: always
     ports:
       - 127.0.0.1:${MONGO_EXPRESS_PORT:-8081}:${MONGO_EXPRESS_PORT:-8081}
- #   networks:
-   #   - network1
     environment:
       - ME_CONFIG_MONGODB_SERVER=mongo
       - ME_CONFIG_MONGODB_PORT=${MONGODB_PORT:-27017}
@@ -46,10 +37,20 @@ services:
       - ME_CONFIG_BASICAUTH_USERNAME=${MONGO_EXPRESS_USERNAME:-username}
       - ME_CONFIG_BASICAUTH_PASSWORD=${MONGO_EXPRESS_PASSWORD:-password}
     depends_on:
-      - mongo
+      - mongo, openvpn-client
     # network_mode: container:openvpn_radical
 
-#networks:
-  #network1:
- #   name: my-pre-existing-network
-#    external: true
+  openvpn-client:
+    image: ghcr.io/wfg/openvpn-client:latest
+    container_name: openvpn_radical
+    cap_add:
+      - NET_ADMIN
+    devices:
+      - /dev/net/tun:/dev/net/tun
+    environment:
+      - ALLOWED_SUBNETS=192.168.10.0/24,127.0.0.1/24
+    ports:
+      - 9001:9001
+    volumes:
+      - /home/fedorov_ov/gpt4bot/conf:/data/vpn
+    restart: unless-stopped
