@@ -21,7 +21,7 @@ services:
       dockerfile: Dockerfile
     depends_on:
       - mongo, openvpn-client
-    network_mode: "service:openvpn_radical"
+    network_mode: "container:openvpn_radical"
 
   mongo_express:
     container_name: mongo-express
