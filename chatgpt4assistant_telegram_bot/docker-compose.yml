@@ -5,13 +5,13 @@ services:
     container_name: mongo
     image: mongo:latest
     restart: always
-    ports:
-      - 127.0.0.1:${MONGODB_PORT:-27017}:${MONGODB_PORT:-27017}
+    # ports:
+    #   - 127.0.0.1:${MONGODB_PORT:-27017}:${MONGODB_PORT:-27017}
     depends_on:
       - openvpn-client
     volumes:
       - ${MONGODB_PATH:-./mongodb}:/data/db
-    #network_mode: container:openvpn_radical
+    network_mode: container:openvpn_radical
 
   chatgpt_telegram_bot:
     container_name: chatgpt_telegram_bot
@@ -28,8 +28,8 @@ services:
     container_name: mongo-express
     image: mongo-express:latest
     restart: always
-    ports:
-      - 127.0.0.1:${MONGO_EXPRESS_PORT:-8081}:${MONGO_EXPRESS_PORT:-8081}
+    # ports:
+    #   - 127.0.0.1:${MONGO_EXPRESS_PORT:-8081}:${MONGO_EXPRESS_PORT:-8081}
     environment:
       - ME_CONFIG_MONGODB_SERVER=mongo
       - ME_CONFIG_MONGODB_PORT=${MONGODB_PORT:-27017}
@@ -39,7 +39,7 @@ services:
       - ME_CONFIG_BASICAUTH_PASSWORD=${MONGO_EXPRESS_PASSWORD:-password}
     depends_on:
       - mongo, openvpn_radical
-    #network_mode: container:openvpn_radical
+    network_mode: container:openvpn_radical
 
   openvpn-client:
     image: ghcr.io/wfg/openvpn-client:latest
@@ -49,11 +49,11 @@ services:
     devices:
       - /dev/net/tun:/dev/net/tun
     environment:
-      - ALLOWED_SUBNETS=192.168.10.0/24 #127.0.0.1/24
+      - ALLOWED_SUBNETS=192.168.10.0/24, 127.0.0.1/24
     ports:
       - 9001:9001
-     # - 8081:8081
-     # - 27017:27017
+      - 8081:8081
+      - 27017:27017
     volumes:
       - /home/fedorov_ov/gpt4bot/conf:/data/vpn
     restart: unless-stopped
