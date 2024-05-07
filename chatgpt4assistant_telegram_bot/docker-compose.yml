@@ -28,7 +28,7 @@ services:
     image: mongo-express:latest
     restart: always
     ports:
-      - 127.0.0.1:${MONGO_EXPRESS_PORT:-8084}:${MONGO_EXPRESS_PORT:-8084}
+      - 127.0.0.1:${MONGO_EXPRESS_PORT:-8089}:${MONGO_EXPRESS_PORT:-8089}
     environment:
       - ME_CONFIG_MONGODB_SERVER=mongo
       - ME_CONFIG_MONGODB_PORT=${MONGODB_PORT:-27019}
@@ -51,7 +51,7 @@ services:
       - ALLOWED_SUBNETS=192.168.10.0/24 #,127.0.0.1/24
     ports:
       - 9001:9001
-      - 8084:8084
+      - 8089:8089
       - 27019:27019
     volumes:
       - /home/fedorov_ov/gpt4bot/conf:/data/vpn
