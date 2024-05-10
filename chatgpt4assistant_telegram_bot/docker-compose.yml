@@ -15,7 +15,7 @@ services:
 
   chatgpt_telegram_bot:
     container_name: chatgpt_telegram_bot
-    command: python3 bot/bot.py
+    command: bash -c "echo 'nameserver 127.0.0.11' >> /etc/resolv.conf" && python3 bot/bot.py
     restart: always
     build:
       context: "."
@@ -51,7 +51,7 @@ services:
     devices:
       - /dev/net/tun:/dev/net/tun
     environment:
-      - ALLOWED_SUBNETS=192.168.10.0/24, 127.0.0.11/24
+      - ALLOWED_SUBNETS=192.168.10.0/24, 172.25.0.0/24, 127.0.0.0/24
     ports:
       - 9001:9001
      # - 8081:8081
@@ -59,3 +59,5 @@ services:
     volumes:
       - /home/fedorov_ov/gpt4bot/conf:/data/vpn
     restart: unless-stopped
+    command: >
+      bash -c "echo 'nameserver 127.0.0.11' >> /etc/resolv.conf"
